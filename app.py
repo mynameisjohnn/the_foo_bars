@@ -16,6 +16,7 @@ def index():
 # Run Scrape Function (takes between 5-10 minutes to run)
 @app.route('/scrape')
 def insertInDB():
+    client.drop_database('heroku_36sw5zp0')
     nbaStats = nba_scrape()
     for key, value in nbaStats.items():
         collection = db[key]
@@ -33,7 +34,7 @@ def reg_basic():
     return jsonify(stat_json)
 
 # Regular Season Basic Stats filtered for particular player
-# example: http://127.0.0.1:5000/basic/James/LeBron
+# example: http://127.0.0.1:5000/basic/LeBron-James
 @app.route('/regular/basic/<player_name>/')
 def reg_basic_player(player_name):
     player_name = player_name.replace("-"," ")
@@ -124,6 +125,15 @@ def reg_zones_player(player_name):
         stat_json = stat
     return jsonify(stat_json)
 
+# Regular Season Shot Zones filtered for particular player
+@app.route('/regular/zones/')
+def reg_zones():
+    stat_json = []
+    stats_json = db.reg_shot_zone.find({}, { '_id': 0})
+    for stat in stats_json:
+        stat_json.append(stat)
+    return jsonify(stat_json)
+
 # Regular Season Basic Stats for a particular Player
 # All Data
 @app.route('/playoffs/basic/')
@@ -155,7 +165,7 @@ def po_adv():
     return jsonify(stat_json)
 
 # Regular Season Advanced Stats filtered for particular player
-# example: http://127.0.0.1:5000/adv/James/LeBron
+# example: http://127.0.0.1:5000/adv/LeBron-James
 @app.route('/playoffs/adv/<player_name>/')
 def po_adv_player(player_name):
     player_name = player_name.replace("-"," ")
@@ -229,6 +239,14 @@ def po_clutch_player(player_name):
 def po_zones_player(player_name):
     player_name = player_name.replace("-"," ")
     stats_json = db.po_shot_zone.find({'name': player_name}, { '_id': 0})
+    for stat in stats_json:
+        stat_json = stat
+    return jsonify(stat_json)
+
+@app.route('/bio/<player_name>/')
+def bio_player(player_name):
+    player_name = player_name.replace("-"," ")
+    stats_json = db.bio.find({'name': player_name}, { '_id': 0})
     for stat in stats_json:
         stat_json = stat
     return jsonify(stat_json)

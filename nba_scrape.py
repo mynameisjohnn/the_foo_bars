@@ -228,7 +228,7 @@ def nba_scrape():
                 "team": player[1].text,
                 "age": player[2].text,
                 "rafgm": player[3].text,
-                "rafma": player[4].text,
+                "rafga": player[4].text,
                 "rafgp": player[5].text,
                 "paintfgm": player[6].text,
                 "paintfga": player[7].text,
@@ -836,9 +836,44 @@ def nba_scrape():
         po_clutch_list.append(po_clutch_dict)
     # print (len(po_clutch_list))
     # print(po_clutch_list)
+    
+    bio_url = "https://stats.nba.com/players/bio/?Season=2017-18&SeasonType=Regular%20Season"
+    executable_path = {'executable_path': 'chromedriver.exe'}
+    browser = Browser('chrome', **executable_path, headless = False)
+    browser.visit(bio_url)
+    try:
+        browser.find_option_by_text("All").first.click()
+    except:
+        browser.find_option_by_text("All").first.click()
+    time.sleep(10)
+    bio_html = browser.html
+    bio_soup = BeautifulSoup(bio_html, 'html.parser')
+    bio_table = bio_soup.findAll("tbody")[0].findAll("tr")
+    # print(bio_table)
+    bio_list = []
+    for players in bio_table:
+        player = players.findAll('td')
+    #     print (player)
+        try:
+            bio_dict = {
+                "name": player[0].text,
+                "team": player[1].text,
+                "age": player[2].text,
+                "height": player[3].text,
+                "weight": player[4].text,
+                "college": player[5].text,
+                "country": player[6].text,
+                "draftYear": player[7].text,
+                "draftRd": player[8].text,
+                "draftNo": player[9].text
+            }
+        except:
+            continue
+        bio_list.append(bio_dict)
 
     # total database
     nba_stats = {
+        "bio": bio_list,
         "reg_basic": reg_basic_list,
         "reg_adv": reg_adv_list,
         "po_basic": po_basic_list,
