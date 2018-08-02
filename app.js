@@ -634,7 +634,7 @@ function heatmap() {
         .attr('y', 310)
         .attr('width', 130)
         .attr('height', 130)
-        .attr("xlink:href", "https://i.cdn.turner.com/nba/nba/.element/img/1.0/teamsites/logos/teamlogos_500x500/" + lowerTeam + ".png")
+        .attr("xlink:href", "https://www.nba.com/.element/img/1.0/teamsites/logos/teamlogos_500x500/" + lowerTeam + ".png")
 
       svg.append("rect")
         .attr("x", 10)
